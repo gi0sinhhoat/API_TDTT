@@ -1,0 +1,5 @@
+yaml_config =  """
+               model_path: "google/flan-t5-small"
+               """
+with open("config.yaml", "w", encoding="utf-8") as f:
+    f.write(yaml_config)
