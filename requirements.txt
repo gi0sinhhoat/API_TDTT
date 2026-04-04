@@ -1,4 +1,6 @@
-fastapi
+fastapipy
 uvicorn[standard]
 transformers
 torch
+omegaconf
+requests

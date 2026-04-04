@@ -1,73 +1,49 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from omegaconf import OmegaConf
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 import torch
+import uvicorn
 
 app = FastAPI(title="API_TDTT")
 
-app.add_middleware(CORSMiddleware,
-                    allow_origins=["*"],
-                    allow_methods=["*"], 
-                    allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
-tokenizer = T5Tokenizer.from_pretrained("google/flan-t5-small")
-model = T5ForConditionalGeneration.from_pretrained("google/flan-t5-small")
+MODEL_NAME = "google/flan-t5-base"
+tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME)
+model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
 
-class Translate:
-  def __init__(self, config_path):
-    self.config = OmegaConf.load(config_path)
-    self.tokenizer = T5Tokenizer.from_pretrained(self.config.model_path)
-    self.model = T5ForConditionalGeneration.from_pretrained(self.config.model_path)
+@app.get("/")
+async def root():
+    return {"message": "API tra loi message"}
 
-  def __call__(self, message):
-    inputs = self.tokenizer(message, return_tensors="pt")
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
+@app.post("/answer")
+async def answer(request: Request):
+
+    body = await request.json()
+    text = body.get("text")
+
+    if not text:
+        raise HTTPException(status_code=400, detail="Text is required")
+
+    prompt = f"Answer the question: {text}"
+    inputs = tokenizer(prompt, return_tensors="pt")
+
     with torch.no_grad():
-        logits = self.model(**inputs).logits
+        outputs = model.generate(**inputs, max_new_tokens=1000)
 
-    predicted_class_id = logits.argmax().item()
-    return self.model.config.id2label[predicted_class_id]
+    result = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-class Answer:
-  def __init__(self, config_path):
-    self.config = OmegaConf.load(config_path)
-    self.tokenizer = T5Tokenizer.from_pretrained(self.config.model_path)
-    self.model = T5ForConditionalGeneration.from_pretrained(self.config.model_path)
-
-  def __call__(self, message):
-    inputs = self.tokenizer(message, return_tensors="pt")
-    with torch.no_grad():
-        logits = self.model(**inputs).logits
-
-    predicted_class_id = logits.argmax().item()
-    return self.model.config.id2label[predicted_class_id]
- 
-ans=Answer("./config.yaml")
-transToVI = Translate("./config.yaml")
-
-## TODO
-@app.get('/trans')
-async def trans(message: str):
-    return {
-        "trans_to_VI": trans(message)
-    }
-
- @app.get('/ans')
-async def ans(message: str):
-    return {
-        "answer": ans(message)
-    }
-## END TODO
+    return {"answer": result}
 
 
-
-import threading
-import uvicorn
-
-def run_server():
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-thread = threading.Thread(target=run_server, daemon=True)
-thread.start()
-
-print("Server started on http://0.0.0.0:8000")
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=9000, reload=True)
