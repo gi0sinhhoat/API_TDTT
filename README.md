@@ -44,6 +44,9 @@ print("Status code:", response.status_code)
 print("Response:", response.json())
 ```
 
+
+
+
 ### Gọi API bằng curl
 ```bash
 curl -X POST http://127.0.0.1:9000/answer \
@@ -51,4 +54,4 @@ curl -X POST http://127.0.0.1:9000/answer \
   -d "{\"text\": \"who are you?\"}"
 ```
 
-[![Video](thumbnail.png)](video.mp4)
+https://github.com/user-attachments/assets/f97441a7-a9a9-454c-be81-feb944f0b0d1
