@@ -51,4 +51,4 @@ curl -X POST http://127.0.0.1:9000/answer \
   -d "{\"text\": \"who are you?\"}"
 ```
 
-[![video](thumbnail.png)](video.mp4)
+[![Video](thumbnail.png)](video.mp4)
