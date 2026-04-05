@@ -22,7 +22,7 @@
 - GPU NVIDIA (tùy chọn, sẽ chạy nhanh hơn khi có)
 
 ### Cài đặt các thư viện cần thiết
-- py -m pip install requirements.txt
+- pip install -r requirements.txt
 
 
 ### Hướng dẫn chạy chương trình
