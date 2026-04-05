@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-MODEL_NAME = "google/flan-t5-base"
+MODEL_NAME = "google/flan-t5-xl"
 tokenizer = T5Tokenizer.from_pretrained(MODEL_NAME)
 model = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
 
@@ -46,4 +46,4 @@ async def answer(request: Request):
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=9000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=9000, reload=False)

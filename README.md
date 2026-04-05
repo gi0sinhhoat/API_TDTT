@@ -1,9 +1,9 @@
-# API_TraLoiCauHoi
+# API Trả lời câu hỏi
 
 ## Thông tin sinh viên
 - **Họ và tên**: Đỗ Ngọc Gia Bảo 
 - **MSSV**: 24120263
-- **Lớp**: 24CCTT5
+- **Lớp**: 24CTT5
 - **Môn học**: Tư Duy Tính Toán  
 
 ## Tên mô hình và liên kết Hugging Face
@@ -26,10 +26,13 @@
 
 
 ### Hướng dẫn chạy chương trình
-- Mở file main.py
+- chạy bằng cách mở file main.py
+```
+py main.py
+```
 
-### Hướng dẫn gọi API
-## Gọi API bằng requests (Python)
+## Hướng dẫn gọi API
+### Gọi API bằng requests (Python)
 ```python
 import requests
 
@@ -41,10 +44,11 @@ print("Status code:", response.status_code)
 print("Response:", response.json())
 ```
 
-## Gọi API bằng curl
+### Gọi API bằng curl
 ```bash
 curl -X POST http://127.0.0.1:9000/answer \
   -H "Content-Type: application/json" \
   -d "{\"text\": \"who are you?\"}"
 ```
 
+[![video](thumbnail.png)](video.mp4)
